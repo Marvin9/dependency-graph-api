@@ -6,6 +6,12 @@ type baseType = ts.Node;
 
 let visitedFiles = {};
 
+type dependencyGraphType = {
+  [node: string]: string[];
+};
+
+let dependencyGraph: dependencyGraphType = {};
+
 const validExtensions = ['.js', '.jsx', '.ts', '.tsx'];
 
 const normalizedPath = (finalPath: string): string | null => {
@@ -26,6 +32,20 @@ const normalizedPath = (finalPath: string): string | null => {
   return null;
 };
 
+const has = (key: object, value: string): boolean =>
+  Object.prototype.hasOwnProperty.call(key, value);
+
+const addToDependencyGraph = (node: string, child: string): void => {
+  if (has(dependencyGraph, node)) {
+    dependencyGraph[node] = [...dependencyGraph[node], child];
+  } else {
+    dependencyGraph = {
+      ...dependencyGraph,
+      [node]: [child],
+    };
+  }
+};
+
 const isValidExtension = (path: string): boolean => {
   const extension = extname(path);
   return validExtensions.findIndex((ext) => ext === extension) !== -1;
@@ -33,9 +53,14 @@ const isValidExtension = (path: string): boolean => {
 
 const GenerateNode = (
   src: string,
-  path: string
+  path: string,
+  root?: boolean
 ): [ts.SourceFile, string] | null => {
-  let finalPath = resolve(src, path);
+  let srcDir;
+  if (root) srcDir = src;
+  else srcDir = dirname(src);
+
+  let finalPath = resolve(srcDir, path);
   if (!isValidExtension) return null;
 
   const baseName = basename(finalPath);
@@ -56,6 +81,9 @@ const GenerateNode = (
   }
 
   if (fileExists) {
+    // if everything is correct, add to dependency graph
+    addToDependencyGraph(src, finalPath);
+
     const read = readFileSync(finalPath, 'utf8');
     const node = ts.createSourceFile(baseName, read, ts.ScriptTarget.Latest);
     return [node, finalPath];
@@ -63,9 +91,6 @@ const GenerateNode = (
   console.error(`File does not exist: ${finalPath}`);
   return null;
 };
-
-const has = (key: object, value: string): boolean =>
-  Object.prototype.hasOwnProperty.call(key, value);
 
 const IterateStatements = (node: ts.SourceFile, finalPath: string): void => {
   // Check if already visited
@@ -92,7 +117,7 @@ const IterateStatements = (node: ts.SourceFile, finalPath: string): void => {
 };
 
 const importResolve = (src: string, modulePath: string): void => {
-  const newImportNode = GenerateNode(dirname(src), modulePath);
+  const newImportNode = GenerateNode(src, modulePath);
   if (newImportNode) {
     IterateStatements(newImportNode[0], newImportNode[1]);
   } else {
@@ -346,7 +371,7 @@ const Iteration = (node: baseType, path: string): void => {
 
 if (process.argv.length >= 3) {
   const [, , indexFile] = process.argv;
-  const Chunk = GenerateNode(process.cwd(), indexFile);
+  const Chunk = GenerateNode(process.cwd(), indexFile, true);
 
   let node, finalPath: string;
   if (Chunk) {
@@ -355,5 +380,6 @@ if (process.argv.length >= 3) {
 
   IterateStatements(node, finalPath);
   // console.log(visitedFiles);
-  writeFileSync('test.json', JSON.stringify(visitedFiles, null, ' '));
+  // writeFileSync('test.json', JSON.stringify(visitedFiles, null, ' '));
+  console.log(dependencyGraph);
 }

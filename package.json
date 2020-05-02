@@ -1,7 +1,7 @@
 {
-  "name": "unused-export",
+  "name": "dependency-graph",
   "version": "1.0.0",
-  "description": "Find unused exports",
+  "description": "Dependency graph visualizer",
   "scripts": {
     "build": "tsc",
     "lint": "eslint ./lib/**/* --ext .ts --cache",
