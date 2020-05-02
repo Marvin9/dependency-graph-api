@@ -71,7 +71,11 @@ const GenerateNode = (
     finalPath = normalizedPath(finalPath);
 
     // It means it is either external library.
-    if (!finalPath) return null;
+    if (!finalPath) {
+      // external lib validation will be done in future through package.json
+      addToDependencyGraph(src, path);
+      return null;
+    }
     checkFileExistance = false;
   }
 
@@ -380,6 +384,6 @@ if (process.argv.length >= 3) {
 
   IterateStatements(node, finalPath);
   // console.log(visitedFiles);
-  // writeFileSync('test.json', JSON.stringify(visitedFiles, null, ' '));
-  console.log(dependencyGraph);
+  writeFileSync('depGraph.json', JSON.stringify(dependencyGraph, null, ' '));
+  // console.log(dependencyGraph);
 }
