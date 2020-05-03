@@ -1,9 +1,13 @@
 const fs = require('fs');
 const path = require('path');
 
-const test = JSON.parse(fs.readFileSync('test.json', 'utf8'));
 
-const initial = path.resolve(process.cwd(), '../open_source/Ignitus-client/src');
+if (process.argv.length < 4) throw new Error('Provide arguments as a path');
+
+const [,, relativePath, generatedGraph] = process.argv;
+
+const initial = path.resolve(process.cwd(), relativePath);
+const test = JSON.parse(fs.readFileSync(generatedGraph, 'utf8'));
 
 const has = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
 
@@ -17,7 +21,7 @@ const iterate = pth => {
     return;
   }
 
-  if (!has(test, pth)) {
+  if (!has(test, pth) && (path.extname(pth) === '.js' || path.extname(pth) === '.ts' || path.extname(pth) === '.tsx' || path.extname(pth) === '.jsx')) {
     console.log(pth);
     ignored++;
   }
