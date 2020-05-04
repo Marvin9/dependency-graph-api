@@ -3,19 +3,23 @@
   "version": "1.0.0",
   "description": "Dependency graph visualizer",
   "scripts": {
+    "start": "tsc && node dist/server/server",
     "build": "tsc",
-    "lint": "eslint ./lib/**/* --ext .ts --cache",
+    "lint": "eslint ./lib/**/* ./server/**/* --ext .ts --cache",
     "lint:fix": "yarn lint --fix",
-    "watch": "tsc --watch",
-    "do": "clear && node dist/index"
+    "watch": "tsc --watch"
   },
   "author": "mayursinh",
   "license": "MIT",
   "dependencies": {
+    "express": "^4.17.1",
+    "nodegit": "^0.26.5",
     "typescript": "^3.8.3"
   },
   "devDependencies": {
+    "@types/express": "^4.17.6",
     "@types/node": "^13.13.4",
+    "@types/nodegit": "^0.26.2",
     "@typescript-eslint/eslint-plugin": "^2.30.0",
     "@typescript-eslint/parser": "^2.30.0",
     "eslint": "^6.8.0",
