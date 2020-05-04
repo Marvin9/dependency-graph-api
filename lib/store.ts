@@ -1,12 +1,14 @@
 import { has } from './utils';
 
+export type dependencyGraphType = {
+  [source: string]: string[];
+};
+
 export interface StoreType {
   visitedFiles: {
     [path: string]: boolean;
   };
-  dependencyGraph: {
-    [source: string]: string[];
-  };
+  dependencyGraph: dependencyGraphType;
 }
 
 export const Store: StoreType = {

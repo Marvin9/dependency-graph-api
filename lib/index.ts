@@ -1,19 +1,22 @@
-import { writeFileSync } from 'fs';
-
-import { Store } from './store';
+import { Store, dependencyGraphType } from './store';
 import { GenerateNode } from './helpers/generateNode';
 import { TraverseStatements } from './helpers/ASTTraverse';
 
-if (process.argv.length >= 3) {
-  const [, , indexFile] = process.argv;
-  const Chunk = GenerateNode(process.cwd(), indexFile, true);
+export const generateGraph = (
+  rootFolder: string,
+  entryFile: string
+): dependencyGraphType | null => {
+  const Chunk = GenerateNode(rootFolder, entryFile, true);
 
   let node, finalPath: string;
   if (Chunk) {
     [node, finalPath] = Chunk;
-  }
+  } else return null;
 
   TraverseStatements(node, finalPath);
-  // console.log(Store.visitedFiles);
-  // console.log(Store.dependencyGraph);
-}
+
+  const { dependencyGraph } = Store;
+  Store.dependencyGraph = {};
+
+  return dependencyGraph;
+};
