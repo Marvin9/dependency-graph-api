@@ -249,8 +249,8 @@ const Iteration = (node: ts.Node, path: string): void => {
     case ts.SyntaxKind.ExportDeclaration: {
       let modulePath;
       if (
-        (node as ts.ImportDeclaration).moduleSpecifier &&
-        ((node as ts.ImportDeclaration).moduleSpecifier as ts.StringLiteral)
+        (node as ts.ExportDeclaration).moduleSpecifier &&
+        ((node as ts.ExportDeclaration).moduleSpecifier as ts.StringLiteral)
           .text
       ) {
         modulePath = ((node as ts.ExportDeclaration)

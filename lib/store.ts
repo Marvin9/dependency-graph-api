@@ -25,6 +25,12 @@ export const addVisitedFile = (filePath: string): void => {
 
 export const addToDependencyGraph = (source: string, target: string): void => {
   if (has(Store.dependencyGraph, source)) {
+    const findAlready = Store.dependencyGraph[source].findIndex(
+      (tg) => tg === target
+    );
+
+    if (findAlready !== -1) return;
+
     Store.dependencyGraph[source] = [...Store.dependencyGraph[source], target];
   } else {
     Store.dependencyGraph = {
