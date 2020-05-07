@@ -44,7 +44,7 @@ graphAPI.get('/graph', graphVerify, (req, resp) => {
   execSync(`rm -rf ${folderPath}`);
   Clone.clone(githubRepo as string, path.resolve(process.cwd(), folderPath))
     .then(() => {
-      const dependencyGraph = generateGraph(
+      const dependencyGraph: any = generateGraph(
         path.resolve(process.cwd(), folderPath),
         entryFile as string
       );
@@ -56,6 +56,10 @@ graphAPI.get('/graph', graphVerify, (req, resp) => {
         } as errorResponse);
         return;
       }
+
+      Object.keys(dependencyGraph).forEach((key) => {
+        dependencyGraph[key] = Array.from(dependencyGraph[key]);
+      });
 
       // FINALLY SEND AS RESPONSE
       resp.send({
