@@ -1,6 +1,6 @@
-import { Store, dependencyGraphType } from './store';
-import { GenerateNode } from './helpers/generateNode';
-import { TraverseStatements } from './helpers/ASTTraverse';
+import { Store, dependencyGraphType } from "./store";
+import { GenerateNode } from "./helpers/generateNode";
+import { TraverseStatements } from "./helpers/ASTTraverse";
 
 export const generateGraph = (
   rootFolder: string,
@@ -17,6 +17,7 @@ export const generateGraph = (
 
   const { dependencyGraph } = Store;
   Store.dependencyGraph = {};
+  Store.visitedFiles = {};
 
   return dependencyGraph;
 };
