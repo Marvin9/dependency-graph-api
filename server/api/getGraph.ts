@@ -1,14 +1,14 @@
-import { exec, execSync } from "child_process";
-import { Router } from "express";
-import { Clone } from "nodegit";
-import * as path from "path";
-import * as url from "url";
+import { exec, execSync } from 'child_process';
+import { Router } from 'express';
+import { Clone } from 'nodegit';
+import * as path from 'path';
+import * as url from 'url';
 
-import { errorResponse, reposDirectory, successResponse } from "../global";
-import { graphVerify } from "../utils";
+import { errorResponse, reposDirectory, successResponse } from '../global';
+import { graphVerify } from '../utils';
 
 // MAIN LOGIC
-import { generateGraph } from "../../lib";
+import { generateGraph } from '../../lib';
 
 const graphAPI: Router = Router();
 
@@ -18,7 +18,7 @@ const graphAPI: Router = Router();
  * 2. Clone repo
  * 3. Generate graph
  */
-graphAPI.get("/graph", graphVerify, (req, resp) => {
+graphAPI.get('/graph', graphVerify, (req, resp) => {
   const { githubRepo, entryFile } = req.query;
 
   const parsedUrl = url.parse(githubRepo as string);
@@ -26,7 +26,7 @@ graphAPI.get("/graph", graphVerify, (req, resp) => {
   if (!parsedUrl || !parsedUrl.pathname) {
     resp.status(400).send({
       error: true,
-      message: "Invalid url of repository",
+      message: 'Invalid url of repository',
     } as errorResponse);
     return;
   }
@@ -34,7 +34,7 @@ graphAPI.get("/graph", graphVerify, (req, resp) => {
   const { pathname } = parsedUrl;
 
   // pathname => /username/repoName
-  const [username, repoName] = pathname.slice(1).split("/");
+  const [username, repoName] = pathname.slice(1).split('/');
   const uniqueFolderName = `${username}_${repoName}`;
 
   // where repo should be cloned
@@ -52,7 +52,7 @@ graphAPI.get("/graph", graphVerify, (req, resp) => {
       if (!dependencyGraph) {
         resp.status(400).send({
           error: true,
-          message: "Error while generating graph",
+          message: 'Error while generating graph',
         } as errorResponse);
         return;
       }
@@ -62,7 +62,7 @@ graphAPI.get("/graph", graphVerify, (req, resp) => {
       const normalisePath = (absolutePath: string) => {
         if (absolutePath.includes(toPath)) {
           const shortenedPath = absolutePath.slice(toPath.length);
-          return shortenedPath || "/";
+          return shortenedPath || '/';
         }
 
         return absolutePath;
@@ -91,7 +91,7 @@ graphAPI.get("/graph", graphVerify, (req, resp) => {
     .catch(() => {
       resp.status(400).send({
         error: true,
-        message: "Internal error.",
+        message: 'Internal error.',
       } as errorResponse);
     });
 });

@@ -80,8 +80,9 @@ const Iteration = (node: ts.Node, path: string): void => {
           ts.SyntaxKind.ImportKeyword
       ) {
         // import('foo');
-        const modulePath = ((node as ts.CallExpression)
-          .arguments[0] as ts.StringLiteral).text;
+        const modulePath = (
+          (node as ts.CallExpression).arguments[0] as ts.StringLiteral
+        ).text;
 
         if (modulePath) {
           importResolve(path, modulePath);
@@ -98,14 +99,16 @@ const Iteration = (node: ts.Node, path: string): void => {
       }
 
       Iteration(
-        (node as
-          | ts.PropertyAccessExpression
-          | ts.ElementAccessExpression
-          | ts.CallExpression
-          | ts.NewExpression
-          | ts.ExpressionWithTypeArguments
-          | ts.ExpressionStatement
-          | ts.ReturnStatement).expression,
+        (
+          node as
+            | ts.PropertyAccessExpression
+            | ts.ElementAccessExpression
+            | ts.CallExpression
+            | ts.NewExpression
+            | ts.ExpressionWithTypeArguments
+            | ts.ExpressionStatement
+            | ts.ReturnStatement
+        ).expression,
         path
       );
       break;
@@ -113,10 +116,8 @@ const Iteration = (node: ts.Node, path: string): void => {
 
     case ts.SyntaxKind.FunctionExpression:
     case ts.SyntaxKind.ArrowFunction:
-      (node as
-        | ts.FunctionExpression
-        | ts.ArrowFunction).parameters.forEach((parameter) =>
-        Iteration(parameter, path)
+      (node as ts.FunctionExpression | ts.ArrowFunction).parameters.forEach(
+        (parameter) => Iteration(parameter, path)
       );
       Iteration((node as ts.FunctionExpression | ts.ArrowFunction).body, path);
       break;
@@ -133,10 +134,8 @@ const Iteration = (node: ts.Node, path: string): void => {
 
     case ts.SyntaxKind.ClassExpression:
     case ts.SyntaxKind.ClassDeclaration:
-      (node as
-        | ts.ClassExpression
-        | ts.ClassDeclaration).members.forEach((member) =>
-        Iteration(member, path)
+      (node as ts.ClassExpression | ts.ClassDeclaration).members.forEach(
+        (member) => Iteration(member, path)
       );
       break;
 
@@ -230,8 +229,9 @@ const Iteration = (node: ts.Node, path: string): void => {
         ((node as ts.ImportDeclaration).moduleSpecifier as ts.StringLiteral)
           .text
       ) {
-        modulePath = ((node as ts.ImportDeclaration)
-          .moduleSpecifier as ts.StringLiteral).text;
+        modulePath = (
+          (node as ts.ImportDeclaration).moduleSpecifier as ts.StringLiteral
+        ).text;
       } else return;
 
       importResolve(path, modulePath);
@@ -253,8 +253,9 @@ const Iteration = (node: ts.Node, path: string): void => {
         ((node as ts.ExportDeclaration).moduleSpecifier as ts.StringLiteral)
           .text
       ) {
-        modulePath = ((node as ts.ExportDeclaration)
-          .moduleSpecifier as ts.StringLiteral).text;
+        modulePath = (
+          (node as ts.ExportDeclaration).moduleSpecifier as ts.StringLiteral
+        ).text;
       } else return;
 
       importResolve(path, modulePath);
