@@ -2,7 +2,7 @@
 
 Dependency graph generator for imports.
 
-Demo of github.com/Marvin9/hackernews-stories.
+Demo of [github.com/Marvin9/hackernews-stories](https://github.com/Marvin9/hackernews-stories).
 
 ![demo](./recorded.svg)
 
